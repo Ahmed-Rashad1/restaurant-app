@@ -94,7 +94,10 @@ const Header = () => {
               >
                 {user && user.email === "a7medra4aad3@gmail.com" && (
                   <Link to="/CreateItem">
-                    <p className="px-4 py-2 flex gap-5 items-center hover:bg-slate-500 hover:text-white transition-all duration-200 ease-in-out rounded-lg text-base text-textColor">
+                    <p
+                      className="px-4 py-2 flex gap-5 items-center hover:bg-slate-500 hover:text-white transition-all duration-200 ease-in-out rounded-lg text-base text-textColor"
+                      onClick={() => setIsMenu()}
+                    >
                       New Item <MdAdd />
                     </p>
                   </Link>
@@ -141,22 +144,37 @@ const Header = () => {
             >
               {user && user.email === "a7medra4aad3@gmail.com" && (
                 <Link to="/CreateItem">
-                  <p className="px-4 py-2 flex gap-5 items-center hover:bg-slate-500 hover:text-white transition-all duration-200 ease-in-out text-base text-textColor">
+                  <p
+                    className="px-4 py-2 flex gap-5 items-center hover:bg-slate-500 hover:text-white transition-all duration-200 ease-in-out text-base text-textColor"
+                    onClick={() => setIsMenu()}
+                  >
                     New Item <MdAdd />
                   </p>
                 </Link>
               )}
               <ul className="flex flex-col">
-                <li className="text-base text-textColor hover:bg-slate-500 hover:text-slate-50 duration-100 transition-all ease-in-out cursor-pointer  px-4 py-2 ">
+                <li
+                  className="text-base text-textColor hover:bg-slate-500 hover:text-slate-50 duration-100 transition-all ease-in-out cursor-pointer  px-4 py-2 "
+                  onClick={() => setIsMenu()}
+                >
                   Menu
                 </li>
-                <li className="text-base text-textColor hover:bg-slate-500 hover:text-slate-50 hover:text-b duration-100 transition-all ease-in-out cursor-pointer px-4 py-2">
+                <li
+                  className="text-base text-textColor hover:bg-slate-500 hover:text-slate-50 hover:text-b duration-100 transition-all ease-in-out cursor-pointer px-4 py-2"
+                  onClick={() => setIsMenu()}
+                >
                   Home
                 </li>
-                <li className="text-base text-textColor hover:bg-slate-500 hover:text-slate-50 hover:text-b duration-100 transition-all ease-in-out cursor-pointer px-4 py-2">
+                <li
+                  className="text-base text-textColor hover:bg-slate-500 hover:text-slate-50 hover:text-b duration-100 transition-all ease-in-out cursor-pointer px-4 py-2"
+                  onClick={() => setIsMenu()}
+                >
                   About Us
                 </li>
-                <li className="text-base text-textColor hover:bg-slate-500 hover:text-slate-50 hover:text-b duration-100 transition-all ease-in-out cursor-pointer px-4 py-2">
+                <li
+                  className="text-base text-textColor hover:bg-slate-500 hover:text-slate-50 hover:text-b duration-100 transition-all ease-in-out cursor-pointer px-4 py-2"
+                  onClick={() => setIsMenu()}
+                >
                   Services
                 </li>
               </ul>

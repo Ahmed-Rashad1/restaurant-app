@@ -1,12 +1,15 @@
-import React from 'react'
-import Delivery from "../img/delivery.png"
+import React from "react";
+import Delivery from "../img/delivery.png";
 import HeroBg from "../img/heroBg.png";
 import I1 from "../img/i1.png";
-import { heroData } from '../utils/data';
+import { heroData } from "../utils/data";
 
 const HomeContainer = () => {
   return (
-    <section className=" grid grid-cols-1 md:grid-cols-2 gap-2 w-full" id='home'>
+    <section
+      className=" grid grid-cols-1 md:grid-cols-2 gap-2 w-full"
+      id="home"
+    >
       <div className=" py-2 flex-1 flex flex-col items-start justify-center gap-6">
         <div className="flex item checked:gap-2 justify-center bg-orange-100 px-4 py-1 rounded-full">
           <p className=" text-base text-orange-500 font-semibold">
@@ -40,27 +43,42 @@ const HomeContainer = () => {
         </button>
       </div>
       <div className="py-2 flex-1 flex items-center relative">
+        <img
+          src={HeroBg}
+          className="ml-auto h-420 w-full md:w-auto  md:h-650"
+          alt="heroBg"
+        />
 
-        <img src={HeroBg} className="ml-auto h-420 w-full md:w-auto  md:h-650" alt="heroBg" />
+        <div className="w-full h-full absolute top-0 left-0 flex flex-wrap gap-4 items-center justify-center py-4 xl:px-40">
+          {heroData &&
+            heroData.map((n) => (
+              <div
+                id={n.id}
+                className=" lg:w-190 p-2 bg-cardOverlay backdrop-blur-md rounded-3xl flex flex-col justify-center items-center drop-shadow-2xl"
+              >
+                <img
+                  src={n.imageSrc}
+                  className="w-20 lg:w-40 -md-10 lg:-mt-20"
+                  alt="i1"
+                />
 
-        <div className='w-full h-full absolute top-0 left-0 flex flex-wrap gap-4 items-center justify-center py-4 lg:px-24'>
+                <p className=" mt-2 lg:mt-4 text-base lg:text-xl text-textColor font-semibold ">
+                  {n.name}
+                </p>
 
-          {heroData && heroData.map(n => (
-            <div id={n.id} className=" lg:w-190 p-2 bg-cardOverlay backdrop-blur-md rounded-3xl flex flex-col justify-center items-center drop-shadow-2xl">
+                <p className=" text-[12px] lg:text-sm text-lighttextGray font-semibold my-1 lg:my-3">
+                  {n.desc}
+                </p>
 
-              <img src={n.imageSrc} className="w-20 lg:w-40 -md-10 lg:-mt-20" alt="i1" />
-
-              <p className=' mt-2 lg:mt-4 text-base lg:text-xl text-textColor font-semibold '>{n.name}</p>
-
-              <p className=' text-[12px] lg:text-sm text-lighttextGray font-semibold my-1 lg:my-3'>{n.desc}</p>
-
-              <p className=' text-headingColor font-semibold text-sm'><span className=' text-xs text-red-600'>$</span> {n.price}</p>
-            </div>
-          ))}
+                <p className=" text-headingColor font-semibold text-sm">
+                  <span className=" text-xs text-red-600">$</span> {n.price}
+                </p>
+              </div>
+            ))}
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default HomeContainer
+export default HomeContainer;
