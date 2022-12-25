@@ -10,8 +10,17 @@ import {
 } from "react-icons/md";
 import { categories } from "../utils/data";
 import Loader from "./Loader";
-import { ref, uploadBytesResumable } from "firebase/storage"
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { storage } from "../firebase.config";
+import { setLogLevel } from "firebase/app";
+import { getAllFoodItems, saveItem } from "../utils/firebaseFunctions";
+import { useStateValue } from "../context/StateProvider";
+import { actionType } from "../context/reducer";
 
 const CreateContainer = () => {
   const [title, setTitle] = useState("");
@@ -23,19 +32,117 @@ const CreateContainer = () => {
   const [alertStatus, setAlertStatus] = useState("danger");
   const [msg, setMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [{}, dispatch] = useStateValue();
 
   const uploadImage = (e) => {
     setIsLoading(true);
     const imageFile = e.target.files[0];
-    const storageRef = ref(storage, `Images/ ${Date.now()}-${imageFile.name}`)
-    const uploadTask = uploadBytesResumable(storageRef, imageFile)
-    uploadTask/on('state_change', (snapshot) => {
-      const uploadProgress = (snapshot.bytesTransferredsnapshot / snapshot.totalBytes) * 100
-    }, (error) => {}, () = {})
-    console.log(error);
+    const storageRef = ref(storage, `Images/${Date.now()}-${imageFile.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, imageFile);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const uploadProgress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      },
+      (error) => {
+        console.log(error);
+        setFields(true);
+        setMsg("Error while uploading : try Again");
+        setAlertStatus("danger");
+        setTimeout(() => {
+          setFields(false);
+          setIsLoading(false);
+        }, 4000);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
+          setImageAsset(downloadUrl);
+          setIsLoading(false);
+          setFields(true);
+          setMsg("Image uploaded successfully 😊");
+          setAlertStatus("success");
+          setTimeout(() => {
+            setFields(false);
+          }, 4000);
+        });
+      }
+    );
   };
-  const deleteImage = () => {};
-  const saveDetails = () => {};
+  const deleteImage = () => {
+    setIsLoading(true);
+    const deleteRef = ref(storage, imageAsset);
+    deleteObject(deleteRef).then(() => {
+      setImageAsset(null);
+      setIsLoading(false);
+      setFields(true);
+      setMsg("Image deleted successfully 😊");
+      setAlertStatus("success");
+      setTimeout(() => {
+        setFields(false);
+      }, 4000);
+    });
+  };
+  const saveDetails = () => {
+    setIsLoading(true);
+    try {
+      if (!title || !calories || !imageAsset || !price || !category) {
+        setFields(true);
+        setMsg("Required fields can't be empty");
+        setAlertStatus("danger");
+        setTimeout(() => {
+          setFields(false);
+          setIsLoading(false);
+        }, 4000);
+      } else {
+        const data = {
+          id: `${Date.now()}`,
+          title: title,
+          imageUrl: imageAsset,
+          category: category,
+          calories: calories,
+          qty: 1,
+          price: price,
+        };
+        saveItem(data);
+        setIsLoading(false);
+        setFields(true);
+        setMsg("Data Uploaded successfully 😊");
+        clearData();
+        setAlertStatus("success");
+        setTimeout(() => {
+          setFields(false);
+        }, 4000);
+      }
+    } catch (error) {
+      console.log(error);
+      setFields(true);
+      setMsg("Error while uploading : try Again");
+      setAlertStatus("danger");
+      setTimeout(() => {
+        setFields(false);
+        setIsLoading(false);
+      }, 4000);
+    }
+
+    fetchData();
+  };
+  const clearData = () => {
+    setTitle("");
+    setImageAsset(null);
+    setCalories("");
+    setPrice("");
+    setCategory("Select Category");
+  };
+
+  const fetchData = async () => {
+    await getAllFoodItems().then((data) => {
+      dispatch({
+        type: actionType.SET_FOOD_ITEMS,
+        foodItems: data,
+      });
+    });
+  };
 
   return (
     <div className=" w-full min-h-screen flex items-center justify-center">
@@ -50,7 +157,9 @@ const CreateContainer = () => {
                 ? "w-full p-2 rounded-lg text-center text-lg font-semibold bg-red-400 text-red-800"
                 : "w-full p-2 rounded-lg text-center text-lg font-semibold bg-emerald-400 text-emerald-800"
             }
-          ></motion.p>
+          >
+            {msg}
+          </motion.p>
         )}
 
         <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
@@ -139,7 +248,7 @@ const CreateContainer = () => {
               type="text"
               required
               value={calories}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => setCalories(e.target.value)}
               placeholder="Calories"
               className=" h-full w-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400"
             />

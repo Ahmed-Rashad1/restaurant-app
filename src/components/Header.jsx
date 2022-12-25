@@ -13,7 +13,7 @@ const Header = () => {
   const firebaseAuth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user, cartShow, cartItems }, dispatch] = useStateValue();
 
   const [isMenu, setIsMenu] = useState(false);
 
@@ -41,6 +41,12 @@ const Header = () => {
     });
   };
 
+  const showCart = () => {
+    dispatch({
+      type: actionType.SET_CART_SHOW,
+      cartShow: !cartShow,
+    });
+  };
   return (
     <header className="w-screen fixed z-50 p-3 px-8 md:p-6 md:px-16 bg-primary">
       {/* desktop & tablet*/}
@@ -58,11 +64,14 @@ const Header = () => {
             exit={{ opacity: 0, x: 200 }}
             className="flex items-center gap-8 ml-auto"
           >
-            <li className="text-base text-textColor hover:text-black duration-100 transition-all ease-in-out cursor-pointer">
-              Menu
-            </li>
-            <li className="text-base text-textColor hover:text-black hover:text-b duration-100 transition-all ease-in-out cursor-pointer">
+            <Link
+              to="/"
+              className="text-base text-textColor hover:text-black duration-100 transition-all ease-in-out cursor-pointer"
+            >
               Home
+            </Link>
+            <li className="text-base text-textColor hover:text-black hover:text-b duration-100 transition-all ease-in-out cursor-pointer">
+              Menu
             </li>
             <li className="text-base text-textColor hover:text-black hover:text-b duration-100 transition-all ease-in-out cursor-pointer">
               About Us
@@ -71,11 +80,18 @@ const Header = () => {
               Services
             </li>
           </motion.ul>
-          <div className="relative flex items-center justify-center">
+          <div
+            className="relative flex items-center justify-center"
+            onClick={showCart}
+          >
             <MdShoppingBasket className="text-textColor text-2xl ml-8 cursor-pointer" />
-            <div className=" absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center  rounded-full bg-cartNumBg">
-              <p className=" text-xm text-white font-semibold">2</p>
-            </div>
+            {cartItems && cartItems.length > 0 && (
+              <div className=" absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center  rounded-full bg-cartNumBg">
+                <p className=" text-xm text-white font-semibold">
+                  {cartItems.length}
+                </p>
+              </div>
+            )}
           </div>
           <div className="relative">
             <motion.img
@@ -115,11 +131,18 @@ const Header = () => {
       </div>
       {/* mobile*/}
       <div className="flex items-center justify-between md:hidden w-full h-full">
-        <div className="relative flex items-center justify-center">
+        <div
+          className="relative flex items-center justify-center"
+          onClick={showCart}
+        >
           <MdShoppingBasket className="text-textColor text-2xl cursor-pointer" />
-          <div className=" absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center  rounded-full bg-cartNumBg">
-            <p className=" text-xm text-white font-semibold">2</p>
-          </div>
+          {cartItems && cartItems.length > 0 && (
+            <div className=" absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center  rounded-full bg-cartNumBg">
+              <p className=" text-xm text-white font-semibold">
+                {cartItems.length}
+              </p>
+            </div>
+          )}
         </div>
         <Link to="/" className="flex item-center gap-2 ml-3">
           <img src={Logo} alt="logo" className="w-8 object-cover" />
